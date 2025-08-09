@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Smart City Dashboard</title>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow-x: hidden;
+  }
+  header {
+    padding: 20px;
+    position: relative;
+    z-index: 10;
+  }
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+  .quote {
+    font-family: 'Brush Script MT', cursive, sans-serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: #a5d6a7;
+    margin: 10px 0 0 0;
+    font-style: italic;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Cards styling */
+  a.card {
+    --base-hue: 150;
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    text-align: center;
+    box-shadow:
+      0 5px 15px rgba(0,0,0,0.3), 
+      inset 0 1px 0 rgba(255,255,255,0.1),
+      inset 0 -3px 5px rgba(0,0,0,0.2);
+    transition: transform 0.4s ease, box-shadow 0.4s ease, background 1s ease;
+    transform-style: preserve-3d;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+
+    background: linear-gradient(
+      135deg,
+      hsl(var(--base-hue), 70%, 50%) 0%,
+      hsl(calc(var(--base-hue) + 40), 80%, 55%) 50%,
+      hsl(calc(var(--base-hue) + 80), 70%, 50%) 100%
+    );
+    background-size: 200% 200%;
+    animation: hueShift 10s linear infinite;
+    height: 150px;
+  }
+  @keyframes hueShift {
+    0% { --base-hue: 150; }
+    25% { --base-hue: 210; }
+    50% { --base-hue: 270; }
+    75% { --base-hue: 330; }
+    100% { --base-hue: 150; }
+  }
+  a.card:hover {
+    transform: rotateX(10deg) rotateY(5deg) scale(1.05);
+    box-shadow:
+      0 15px 35px rgba(0,0,0,0.4), 
+      inset 0 1px 0 rgba(255,255,255,0.2),
+      inset 0 -3px 8px rgba(0,0,0,0.3);
+  }
+  .card i {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  /* Canvas Background */
+  #bgCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+    background: #121212;
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<header>
+  <h1>Smart City Dashboard</h1>
+  <p class="quote">"Building Smarter Cities for a Brighter Tomorrow"</p>
+</header>
+
+<div class="container py-4">
+  <!-- First row -->
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-md-4">
+      <a href="traffic.html" class="card">
+        <i class="fas fa-traffic-light"></i>
+        Traffic Analysis
+      </a>
+    </div>
+    <div class="col-12 col-md-4">
+      <a href="pollution.html" class="card">
+        <i class="fas fa-smog"></i>
+        Pollution Tracker
+      </a>
+    </div>
+    <div class="col-12 col-md-4">
+      <a href="water.html" class="card">
+        <i class="fas fa-tint"></i>
+        Water Supply Tracker
+      </a>
+    </div>
+  </div>
+
+  <!-- Second row -->
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-md-4">
+      <a href="energy.html" class="card">
+        <i class="fas fa-bolt"></i>
+        Energy Usage
+      </a>
+    </div>
+    <div class="col-12 col-md-4">
+      <a href="saftey.html" class="card">
+        <i class="fas fa-shield-alt"></i>
+        Public Safety
+      </a>
+    </div>
+    <div class="col-12 col-md-4">
+      <a href="waste.html" class="card">
+        <i class="fas fa-trash-alt"></i>
+        Waste Management
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() {
+      this.reset();
+    }
+    reset() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.z = Math.random() * width;
+      this.vz = 0.5 + Math.random() * 1.5;
+      this.size = 1 + Math.random() * 2;
+      this.opacity = 0.1 + Math.random() * 0.3;
+    }
+    update() {
+      this.z -= this.vz;
+      if (this.z <= 0) {
+        this.reset();
+        this.z = width;
+      }
+    }
+    draw() {
+      const sx = (this.x - width / 2) * (width / this.z) + width / 2;
+      const sy = (this.y - height / 2) * (width / this.z) + height / 2;
+      const size = this.size * (width / this.z);
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+      ctx.shadowColor = "rgba(255,255,255,0.5)";
+      ctx.shadowBlur = 5;
+      ctx.arc(sx, sy, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  const particles = [];
+  const particleCount = 100;
+
+  for(let i=0; i<particleCount; i++) {
+    particles.push(new Particle());
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+</script>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

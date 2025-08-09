@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Energy Awareness Dashboard</title>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f2f8f5;
+        margin: 0;
+    }
+    header {
+        background: #2e7d32;
+        color: white;
+        padding: 15px;
+        text-align: center;
+    }
+    nav {
+        background: #1b5e20;
+    }
+    nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+        padding: 10px 15px;
+        display: inline-block;
+    }
+    nav a:hover {
+        color: #c8e6c9;
+    }
+    section {
+        padding: 20px 15px;
+    }
+    h2 {
+        color: #2e7d32;
+    }
+    /* Tips */
+    .tip {
+        background: #e8f5e9;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 5px;
+        transition: transform 0.3s;
+        cursor: pointer;
+    }
+    .tip:hover {
+        transform: scale(1.03);
+        background: #c8e6c9;
+    }
+    /* Calculator */
+    .calc-container {
+        background: #fff;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    input {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0 10px 0;
+    }
+    .result {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    /* Quiz */
+    .quiz-question {
+        background: #fff;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+    /* Challenge */
+    .challenge {
+        background: #f1f8e9;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+    }
+    .progress-bar {
+        height: 20px;
+        background: #c8e6c9;
+        border-radius: 5px;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+    .progress {
+        height: 100%;
+        background: #388e3c;
+        width: 0%;
+        transition: width 0.5s;
+    }
+
+    /* Quiz buttons styling */
+    .quiz-question button {
+        margin-right: 10px;
+        margin-top: 8px;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background: #2e7d32;
+        color: white;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+    .quiz-question button:hover {
+        background: #1b5e20;
+    }
+
+    /* Smaller responsive chart */
+    #energyChart {
+        max-width: 400px;
+        max-height: 250px;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Energy Awareness Dashboard</h1>
+</header>
+
+<nav class="d-flex justify-content-center flex-wrap gap-3">
+    <a href="#dashboard">Dashboard</a>
+    <a href="#tips">Energy Tips</a>
+    <a href="#calculator">Cost Calculator</a>
+    <a href="#renewable">Renewable Info</a>
+    <a href="#challenge">Challenge</a>
+</nav>
+
+<!-- 1. Energy Dashboard -->
+<section id="dashboard" class="container text-center">
+    <h2>Energy Consumption Dashboard</h2>
+    <canvas id="energyChart"></canvas>
+</section>
+
+<!-- 2. Tips -->
+<section id="tips" class="container">
+    <h2>Energy Saving Tips</h2>
+    <div id="tipsList" class="row">
+        <div class="tip col-12 col-md-6" data-category="Home">Turn off lights when not in use.</div>
+        <div class="tip col-12 col-md-6" data-category="Office">Use energy-efficient office equipment.</div>
+        <div class="tip col-12 col-md-6" data-category="Transport">Carpool or use public transport.</div>
+        <div class="tip col-12 col-md-6" data-category="Home">Unplug devices when fully charged.</div>
+        <div class="tip col-12 col-md-6" data-category="Office">Enable power-saving mode on computers.</div>
+    </div>
+</section>
+
+<!-- 3. Calculator -->
+<section id="calculator" class="container">
+    <h2>Energy Cost Calculator</h2>
+    <div class="calc-container">
+        <label for="energyUsed">Energy Used (kWh):</label>
+        <input type="number" id="energyUsed" placeholder="Enter kWh" />
+        <label for="costPerKwh">Cost per kWh (₹):</label>
+        <input type="number" id="costPerKwh" placeholder="Enter cost" />
+        <button class="btn btn-success w-100" onclick="calculateCost()">Calculate</button>
+        <div class="result" id="calcResult"></div>
+    </div>
+</section>
+
+<!-- 4. Renewable Energy Info -->
+<section id="renewable" class="container">
+    <h2>Renewable Energy Info</h2>
+    <p><strong>Solar Energy:</strong> Captures sunlight to generate electricity.</p>
+    <p><strong>Wind Energy:</strong> Uses wind turbines to produce power.</p>
+    <p><strong>Hydro Energy:</strong> Generates electricity from water flow.</p>
+
+    <div id="quiz">
+        <h3>Quick Quiz</h3>
+        <div class="quiz-question">
+            <p>Which energy source uses moving water?</p>
+            <button onclick="checkAnswer(this, true)">Hydro</button>
+            <button onclick="checkAnswer(this, false)">Wind</button>
+        </div>
+        <div class="quiz-question">
+            <p>Which energy source uses sunlight?</p>
+            <button onclick="checkAnswer(this, true)">Solar</button>
+            <button onclick="checkAnswer(this, false)">Hydro</button>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Challenge -->
+<section id="challenge" class="container mb-5">
+    <h2>Interactive Energy Saving Challenge</h2>
+    <div class="challenge" onclick="addPoints(10)">Turn off unused lights (+10)</div>
+    <div class="challenge" onclick="addPoints(15)">Use public transport (+15)</div>
+    <div class="challenge" onclick="addPoints(20)">Install solar panels (+20)</div>
+    <div class="progress-bar">
+        <div class="progress" id="progressBar"></div>
+    </div>
+    <p id="pointsDisplay" class="mt-2 fw-bold">Points: 0</p>
+</section>
+
+<!-- Back to Dashboard button -->
+<div class="text-center mb-5">
+  <a href="index.html" class="btn btn-success btn-lg shadow">
+    ← Back to Dashboard
+  </a>
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Chart.js setup
+const ctx = document.getElementById('energyChart').getContext('2d');
+const energyChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets: [{
+            label: 'Energy Usage (kWh)',
+            data: [12, 19, 14, 17, 20, 15, 10],
+            borderColor: '#2e7d32',
+            backgroundColor: '#a5d6a7',
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 1.6
+    }
+});
+
+// Calculator
+function calculateCost() {
+    const kWh = parseFloat(document.getElementById('energyUsed').value);
+    const cost = parseFloat(document.getElementById('costPerKwh').value);
+    const resultEl = document.getElementById('calcResult');
+
+    if (isNaN(kWh) || isNaN(cost) || kWh <= 0 || cost <= 0) {
+        resultEl.innerText = "Please enter valid positive values.";
+        resultEl.style.color = 'red';
+        return;
+    }
+
+    const monthly = kWh * cost;
+    const yearly = monthly * 12;
+
+    resultEl.innerHTML = `Monthly Cost: ₹${monthly.toFixed(2)}<br>Yearly Cost: ₹${yearly.toFixed(2)}`;
+    resultEl.style.color = monthly > 1000 ? 'red' : 'green';
+}
+
+// Quiz
+function checkAnswer(btn, correct) {
+    btn.style.background = correct ? '#a5d6a7' : '#ef9a9a';
+}
+
+// Challenge
+let points = 0;
+function addPoints(val) {
+    points += val;
+    document.getElementById('pointsDisplay').innerText = `Points: ${points}`;
+    const progress = document.getElementById('progressBar');
+    let percentage = Math.min(points, 100);
+    progress.style.width = percentage + '%';
+}
+</script>
+
+</body>
+</html>

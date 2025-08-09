@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Waste Management Dashboard</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #4ca1af);
+      color: #fff;
+      text-align: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    p.subtitle {
+      font-weight: 400;
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      color: #d0e8f2cc;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    /* Use Bootstrap grid, so no cards-container flex needed */
+
+    .waste-card {
+      background: rgba(255 255 255 / 0.15);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      padding: 30px 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      cursor: default;
+      user-select: none;
+      height: 100%;
+    }
+
+    .waste-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 14px 38px rgba(0, 0, 0, 0.4);
+    }
+
+    .waste-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+      color: #ffd700;
+      text-shadow: 0 0 15px #ffd700aa;
+    }
+
+    .waste-title {
+      font-weight: 600;
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      color: #fff;
+      letter-spacing: 0.03em;
+      text-transform: capitalize;
+    }
+
+    .waste-image {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      position: relative;
+      animation: glowPulse 3s infinite alternate ease-in-out;
+    }
+
+    @keyframes glowPulse {
+      0% {
+        box-shadow:
+          0 0 8px 3px rgba(0, 255, 234, 0.6),
+          0 0 15px 5px rgba(0, 255, 234, 0.3);
+      }
+      50% {
+        box-shadow:
+          0 0 12px 6px rgba(0, 255, 234, 0.9),
+          0 0 25px 10px rgba(0, 255, 234, 0.4);
+      }
+      100% {
+        box-shadow:
+          0 0 8px 3px rgba(0, 255, 234, 0.6),
+          0 0 15px 5px rgba(0, 255, 234, 0.3);
+      }
+    }
+
+    .waste-amount {
+      font-size: 3.4rem;
+      font-weight: 700;
+      color: #00ffea;
+      margin-bottom: 10px;
+      text-shadow: 0 0 15px #00ffeaaa;
+    }
+
+    .waste-unit {
+      font-size: 1.2rem;
+      color: #a0f5e9cc;
+      margin-bottom: 15px;
+    }
+
+    .waste-desc {
+      font-size: 1rem;
+      color: #d0e8f2cc;
+      line-height: 1.4;
+    }
+
+    /* Back button override to Bootstrap */
+    a.back-btn {
+      margin-top: 50px;
+      font-weight: 700;
+      border-radius: 30px;
+      box-shadow: 0 6px 18px #ffd700bb;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      color: #121212 !important;
+      background: #ffd700 !important;
+      padding: 14px 30px;
+      display: inline-block;
+      text-decoration: none;
+    }
+    a.back-btn:hover {
+      background: #e6c200 !important;
+      box-shadow: 0 10px 28px #e6c200cc;
+      color: #121212 !important;
+    }
+  </style>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <div class="container text-center">
+    <h1>Waste Management Dashboard</h1>
+    <p class="subtitle">Tracking city waste: Plastic, Food Wastage, animal wastage etc..</p>
+
+    <div class="row justify-content-center gy-4">
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="waste-card h-100">
+          <div class="waste-icon"><i class="fas fa-recycle"></i></div>
+          <div class="waste-title">Plastic Waste</div>
+          <img
+            src="https://i.guim.co.uk/img/media/1ed03759bf089d0805bd7da04de157879ebd8e04/0_42_3300_1980/master/3300.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=a51d3e32c0562ed430da1563cd7f65f2"
+            alt="Plastic Waste"
+            class="waste-image"
+          />
+          <div class="waste-amount">1,250</div>
+          <div class="waste-unit">tons/month</div>
+          <div class="waste-desc">Non-biodegradable waste causing pollution and harming wildlife.</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="waste-card h-100">
+          <div class="waste-icon" style="color:#ff6b6b"><i class="fas fa-apple-alt"></i></div>
+          <div class="waste-title">Food Wastage</div>
+          <img
+            src="https://media.istockphoto.com/id/1208241405/photo/discarded-and-spoiled-food-on-a-rubbish-heap.jpg?s=612x612&w=0&k=20&c=7Dbd84etp7s0R6upv3QHZcZtbfr_8TlGw-R0GGHrcH8="
+            alt="Food Wastage"
+            class="waste-image"
+          />
+          <div class="waste-amount">3,420</div>
+          <div class="waste-unit">tons/month</div>
+          <div class="waste-desc">Edible food lost or discarded, increasing environmental burden.</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="waste-card h-100">
+          <div class="waste-icon" style="color:#ffd700"><i class="fas fa-dumpster"></i></div>
+          <div class="waste-title">Animal Waste</div>
+          <img
+            src="https://pursuit.unimelb.edu.au/__data/assets/image/0010/101080/The-power-of-recycled-poo_e5a5c0ba-1e8d-450d-9de7-5695e0673aca.jpg"
+            alt="Animal Waste"
+            class="waste-image"
+          />
+          <div class="waste-amount">980</div>
+          <div class="waste-unit">tons/month</div>
+          <div class="waste-desc">General waste leftovers from households and commercial activities.</div>
+        </div>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-btn btn mt-5">Back to Dashboard</a>
+  </div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

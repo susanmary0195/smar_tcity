@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Public Safety - Smart City Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      color: #bbb;
+    }
+    .measures-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      text-align: left;
+    }
+    .measure-card {
+      background: rgba(255 255 255 / 0.1);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      transition: transform 0.3s ease;
+      cursor: default;
+    }
+    .measure-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.8);
+    }
+    .icon {
+      font-size: 2.5rem;
+      color: #ffd700;
+      margin-bottom: 15px;
+    }
+    .measure-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+    .measure-desc {
+      font-size: 1rem;
+      color: #ccc;
+      line-height: 1.5;
+    }
+    a.back-btn {
+      display: inline-block;
+      margin-top: 50px;
+      padding: 14px 30px;
+      background: #ffd700;
+      color: #121212;
+      font-weight: 700;
+      border-radius: 30px;
+      text-decoration: none;
+      box-shadow: 0 6px 18px #ffd700bb;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    a.back-btn:hover {
+      background: #e6c200;
+      box-shadow: 0 10px 28px #e6c200cc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Public Safety Measures</h1>
+  <p class="subtitle">Ensuring wellness and security in a Smart City environment.</p>
+
+  <div class="measures-container">
+
+    <a href="cctv.html" style="text-decoration: none; color: inherit;">
+  <div class="measure-card">
+    <div class="icon"><i class="fas fa-video"></i></div>
+    <div class="measure-title">Real-Time Surveillance</div>
+    <div class="measure-desc">
+      AI-powered CCTV with instant alerts for suspicious activities and emergencies.
+    </div>
+  </div>
+</a>
+
+
+    <div class="measure-card">
+      <div class="icon"><i class="fas fa-lightbulb"></i></div>
+      <div class="measure-title">Smart Street Lighting</div>
+      <div class="measure-desc">
+        Adaptive lighting that brightens with movement to increase nighttime safety.
+      </div>
+    </div>
+
+    <div class="measure-card">
+      <div class="icon"><i class="fas fa-bell"></i></div>
+      <div class="measure-title">Disaster Prediction & Alerts</div>
+      <div class="measure-desc">
+        Early warnings for floods, earthquakes, and other natural disasters.
+      </div>
+    </div>
+
+    <div class="measure-card">
+      <div class="icon"><i class="fas fa-phone-alt"></i></div>
+      <div class="measure-title">Connected Emergency Services</div>
+      <div class="measure-desc">
+        Quick emergency access with GPS tracking for faster response times.
+      </div>
+    </div>
+
+    <div class="measure-card">
+      <div class="icon"><i class="fas fa-heartbeat"></i></div>
+      <div class="measure-title">Health Monitoring Stations</div>
+      <div class="measure-desc">
+        Public health kiosks for instant checks and air quality monitoring.
+      </div>
+    </div>
+
+    <div class="measure-card">
+      <div class="icon"><i class="fas fa-shield-alt"></i></div>
+      <div class="measure-title">Community Engagement</div>
+      <div class="measure-desc">
+        Platforms for citizens to report hazards and suspicious behavior.
+      </div>
+    </div>
+
+  </div>
+
+  <a href="index.html" class="back-btn">Back to Dashboard</a>
+
+</body>
+</html>

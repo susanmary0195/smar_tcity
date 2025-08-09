@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Traffic Monitoring Dashboard</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+    header {
+      background: #333;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+    .clock {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    /* Override some Bootstrap card padding */
+    .card {
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .traffic-light {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .light {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: gray;
+    }
+    .active-red {
+      background: red;
+    }
+    .active-yellow {
+      background: yellow;
+    }
+    .active-green {
+      background: green;
+    }
+    .prediction {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #c0392b;
+    }
+    /* Make canvas height consistent */
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Traffic Monitoring Dashboard</h1>
+    <div class="clock" id="liveClock">--:--:--</div>
+  </header>
+
+  <main class="container my-4">
+    <div class="row g-4">
+      <!-- Vehicle Counts -->
+      <section class="col-12 col-lg-8">
+        <div class="card p-3 h-100">
+          <h2>Current Vehicle Counts</h2>
+          <canvas id="trafficChart" aria-label="Vehicle counts bar chart" role="img"></canvas>
+        </div>
+      </section>
+
+      <!-- Congestion Indicator -->
+      <section class="col-12 col-lg-4">
+        <div class="card p-3 h-100 d-flex flex-column align-items-center justify-content-center">
+          <h2>Traffic Congestion Level</h2>
+          <div class="traffic-light" aria-label="Traffic light congestion indicator">
+            <div class="light" id="redLight" aria-label="Red light"></div>
+            <div class="light" id="yellowLight" aria-label="Yellow light"></div>
+            <div class="light" id="greenLight" aria-label="Green light"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Accident Risk Prediction -->
+      <section class="col-12 col-lg-8">
+        <div class="card p-3 h-100">
+          <h2>Accident Risk by Vehicle Type</h2>
+          <p class="prediction" id="accidentPrediction" aria-live="polite" aria-atomic="true">Calculating...</p>
+          <canvas id="accidentChart" aria-label="Accident risk line chart" role="img"></canvas>
+        </div>
+      </section>
+
+      <!-- Summary Stats -->
+      <section class="col-12 col-lg-4">
+        <div class="card p-3 h-100">
+          <h2>Summary Statistics</h2>
+          <p id="avgSpeed">Average Speed: -- km/h</p>
+          <p id="totalVehicles">Total Vehicles Today: --</p>
+          <p id="peakTime">Peak Traffic Time: --</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="index.html" class="btn btn-dark px-4">Back to Dashboard</a>
+    </div>
+  </main>
+
+  <script>
+    // Live Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("liveClock").textContent = now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Current vehicle counts (updated dynamically)
+    let carCount = 0,
+      busCount = 0,
+      bikeCount = 0,
+      autoCount = 0;
+
+    const trafficChart = new Chart(
+      document.getElementById("trafficChart").getContext("2d"),
+      {
+        type: "bar",
+        data: {
+          labels: ["Cars", "Buses", "Bikes", "Autos"],
+          datasets: [
+            {
+              label: "Vehicle Count",
+              data: [carCount, busCount, bikeCount, autoCount],
+              backgroundColor: ["blue", "orange", "green", "purple"],
+            },
+          ],
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } },
+      }
+    );
+
+    // Accident Risk multi-line chart
+    const accidentChart = new Chart(
+      document.getElementById("accidentChart").getContext("2d"),
+      {
+        type: "line",
+        data: {
+          labels: Array.from({ length: 10 }, (_, i) => `T-${10 - i}s`),
+          datasets: [
+            { label: "Cars", data: [], borderColor: "blue", fill: false },
+            { label: "Buses", data: [], borderColor: "orange", fill: false },
+            { label: "Bikes", data: [], borderColor: "green", fill: false },
+            { label: "Autos", data: [], borderColor: "purple", fill: false },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true, max: 100 } },
+        },
+      }
+    );
+
+    function updateCurrentData() {
+      carCount = Math.floor(Math.random() * 50) + 10;
+      busCount = Math.floor(Math.random() * 20) + 5;
+      bikeCount = Math.floor(Math.random() * 30) + 5;
+      autoCount = Math.floor(Math.random() * 25) + 5;
+
+      trafficChart.data.datasets[0].data = [carCount, busCount, bikeCount, autoCount];
+      trafficChart.update();
+    }
+
+    function updateCongestion() {
+      let total = carCount + busCount + bikeCount + autoCount;
+      document.getElementById("redLight").className = "light";
+      document.getElementById("yellowLight").className = "light";
+      document.getElementById("greenLight").className = "light";
+      if (total > 100) {
+        document.getElementById("redLight").classList.add("active-red");
+      } else if (total > 50) {
+        document.getElementById("yellowLight").classList.add("active-yellow");
+      } else {
+        document.getElementById("greenLight").classList.add("active-green");
+      }
+    }
+
+    function updateAccidentRisk() {
+      function calcRisk(count) {
+        return Math.min(100, Math.random() * (count / 50) * 100).toFixed(1);
+      }
+
+      let carRisk = calcRisk(carCount);
+      let busRisk = calcRisk(busCount);
+      let bikeRisk = calcRisk(bikeCount);
+      let autoRisk = calcRisk(autoCount);
+
+      // Push data for line chart
+      accidentChart.data.datasets[0].data.push(carRisk);
+      accidentChart.data.datasets[1].data.push(busRisk);
+      accidentChart.data.datasets[2].data.push(bikeRisk);
+      accidentChart.data.datasets[3].data.push(autoRisk);
+
+      // Keep only last 10 points
+      accidentChart.data.datasets.forEach((ds) => {
+        if (ds.data.length > 10) ds.data.shift();
+      });
+
+      accidentChart.update();
+
+      // Highest risk vehicle
+      let risks = [
+        { type: "Cars", value: carRisk },
+        { type: "Buses", value: busRisk },
+        { type: "Bikes", value: bikeRisk },
+        { type: "Autos", value: autoRisk },
+      ];
+      let maxRisk = risks.reduce((a, b) =>
+        parseFloat(a.value) > parseFloat(b.value) ? a : b
+      );
+      document.getElementById(
+        "accidentPrediction"
+      ).innerText = `Highest accident risk now: ${maxRisk.type} (${maxRisk.value}%)`;
+    }
+
+    function updateStats() {
+      let avgSpeed = (40 + Math.random() * 20).toFixed(1);
+      let totalVehicles = carCount + busCount + bikeCount + autoCount;
+      document.getElementById("avgSpeed").innerText = `Average Speed: ${avgSpeed} km/h`;
+      document.getElementById(
+        "totalVehicles"
+      ).innerText = `Total Vehicles Today: ${totalVehicles}`;
+      document.getElementById("peakTime").innerText = `Peak Traffic Time: ${new Date().toLocaleTimeString()}`;
+    }
+
+    setInterval(() => {
+      updateCurrentData();
+      updateCongestion();
+      updateAccidentRisk();
+      updateStats();
+    }, 5000);
+
+    // Initial load
+    updateCurrentData();
+    updateCongestion();
+    updateAccidentRisk();
+    updateStats();
+  </script>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

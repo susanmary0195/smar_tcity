@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Water Supply Tracker</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f4f8fc;
+        color: #222;
+    }
+
+    header {
+        background: linear-gradient(135deg, #32cd32, #228b22);
+        padding: 20px;
+        color: white;
+        text-align: center;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+
+    .images-section img,
+    .images-section video {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Hover effect for flow boxes and water value cards */
+    .flow-box,
+    .water-values div {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+
+    .flow-box:hover,
+    .water-values div:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1><i class="fas fa-tint"></i> Water Supply Tracker</h1>
+</header>
+
+<div class="container my-4">
+
+    <section class="row images-section g-3">
+        <div class="col-12 col-md-4">
+            <!-- Pure Water Video -->
+            <video controls autoplay muted loop class="w-100 rounded">
+                <source src="https://media.istockphoto.com/id/1179036145/video/flying-towards-woman-walking-along-suspension-bridge-crossing-the-river.mp4?s=mp4-640x640-is&k=20&c=QAXQ7GUNigELLlJtFghmzV-w3Y-7GOOgOKV4IK-Nf8U=" type="video/mp4" />
+            </video>
+        </div>
+        <div class="col-12 col-md-4">
+            <!-- Impure Water -->
+            <img src="https://media.istockphoto.com/id/539099366/photo/polluted-river-with-various-garbage-and-trash.jpg?s=612x612&w=0&k=20&c=LiOdZbeUArJhSdjS5cWAY0kL5aZdzx5LhQO8En_aVhc=" alt="Impure Water" class="img-fluid rounded" />
+        </div>
+        <div class="col-12 col-md-4">
+            <!-- Polluted Water -->
+            <img src="https://media.istockphoto.com/id/1172086718/photo/view-of-a-pond-of-water-with-trees.jpg?s=612x612&w=0&k=20&c=mR0bJSMM8lAZChxCCw6gaFJu2OOF2QP4-nvg1SHOZ3o=" alt="Polluted Water" class="img-fluid rounded" />
+        </div>
+    </section>
+
+    <div class="bg-white rounded shadow p-4 mt-4">
+        <h2 class="mb-4 text-center">Current Water Levels</h2>
+        <div class="water-values d-flex flex-wrap justify-content-center gap-3 mb-4" id="waterValuesContainer"></div>
+
+        <!-- Water Flow Logic Display -->
+        <div class="row text-center g-3">
+            <div class="col-12 col-md-4">
+                <div class="flow-box bg-primary bg-opacity-10 p-3 rounded shadow">
+                    <h3>Pure Water</h3>
+                    <p>Sent to <b>Homes</b> 🏠 for drinking & daily use.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="flow-box bg-warning bg-opacity-10 p-3 rounded shadow">
+                    <h3>Impure Water</h3>
+                    <p>Sent to <b>Agricultural Lands</b> 🌾 for irrigation.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="flow-box bg-danger bg-opacity-10 p-3 rounded shadow">
+                    <h3>Polluted Water</h3>
+                    <p>Sent to <b>Recycling Plant</b> ♻️ → Converted to clean water → Sent to Lands 🌱.</p>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="waterChart" class="mt-4" style="max-height: 350px;"></canvas>
+
+        <!-- Back to Dashboard Button -->
+        <div class="text-center mt-4">
+            <a href="index.html" class="btn btn-success btn-lg shadow">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Initial water level values
+    let waterData = [
+        { type: "Pure Water", level: 70 },
+        { type: "Impure Water", level: 20 },
+        { type: "Polluted Water", level: 10 }
+    ];
+
+    const valuesContainer = document.getElementById("waterValuesContainer");
+
+    // Function to render values
+    function renderValues() {
+        valuesContainer.innerHTML = "";
+        waterData.forEach(data => {
+            const div = document.createElement("div");
+            div.classList.add("bg-light", "text-dark", "p-3", "rounded", "shadow", "flex-grow-1", "text-center");
+            div.style.minWidth = "150px";
+            div.style.maxWidth = "180px";
+            div.innerHTML = `<strong>${data.type}</strong><br><span style="font-size:1.5rem;">${data.level.toFixed(1)}%</span>`;
+            valuesContainer.appendChild(div);
+        });
+    }
+
+    // Chart.js setup
+    const ctx = document.getElementById('waterChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: waterData.map(d => d.type),
+            datasets: [{
+                label: 'Water Level (%)',
+                data: waterData.map(d => d.level),
+                backgroundColor: ['#32cd32', '#ffa500', '#ff4500'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            animation: false,
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+    // Function to slightly change values
+    function updateValues() {
+        waterData = waterData.map(d => {
+            let change = (Math.random() * 4 - 2); // random between -2 and +2
+            let newLevel = d.level + change;
+            if (newLevel < 0) newLevel = 0;
+            if (newLevel > 100) newLevel = 100;
+            return { ...d, level: newLevel };
+        });
+
+        // Update chart & display
+        chart.data.datasets[0].data = waterData.map(d => d.level);
+        chart.update();
+        renderValues();
+    }
+
+    // Initial render
+    renderValues();
+
+    // Update every 5 seconds
+    setInterval(updateValues, 5000);
+</script>
+
+</body>
+</html>
